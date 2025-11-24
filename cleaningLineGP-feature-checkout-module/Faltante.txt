@@ -1,0 +1,30 @@
+tweakcn (pagina para crear estilos css)
+colores de la pagina, tonalidades de verdes 
+
+
+*base de datos*
+conexion base de datos 
+semi relacional o no relacional 
+
+creacion de perfiles de administrados y subAdmin
+Creaciion de perfil de usuarios 
+
+
+*Pagina inicio*
+nvar con catalogo(cocina, baños, aseo, insumos, etc.)
+carrusel 
+productos
+
+*Pagina productos*
+agregar buscardor
+Agregar filtros de busqueda
+
+*Pagina de quienes somos*
+agregacion de contacto
+
+*pagina de dudas y preguntas frecuentes* 
+
+*Chatbot*
+para resolucion de dudas sin necesidad de ayuda humana
+
+¿?

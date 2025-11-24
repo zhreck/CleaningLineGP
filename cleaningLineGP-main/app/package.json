@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
+    "axios": "^1.12.2",
+    "next-auth": "^4.24.11",
+    "zod": "^4.1.11"
+  }
+}
