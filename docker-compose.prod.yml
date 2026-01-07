@@ -1,0 +1,147 @@
+# Docker Compose para Producción
+# Usar con: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+version: '3.8'
+
+services:
+  # PostgreSQL para producción
+  db:
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-ecommerce_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_this_password}
+      POSTGRES_DB: ${DB_DATABASE:-ecommerce_prod}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    # Configuraciones de seguridad para producción
+    command: >
+      postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200 -c shared_buffers=256MB -c effective_cache_size=1GB -c maintenance_work_mem=64MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100
+    # No exponer puerto en producción (usar red interna)
+    # ports:
+    #   - "5432:5432"
+
+    # Redis para producción
+  redis:
+    volumes:
+      - redis_prod_data:/data
+    restart: unless-stopped
+    # Configuraciones de seguridad
+    command: >
+      redis-server --appendonly yes --appendfsync everysec --maxmemory 512mb --maxmemory-policy allkeys-lru
+    # No exponer puerto en producción
+    # ports:
+    #   - "6379:6379"
+
+    # Meilisearch para producción
+  meilisearch:
+    environment:
+      MEILI_ENV: "production"
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-change_this_master_key}
+      MEILI_LOG_LEVEL: "WARN"
+    volumes:
+      - meilisearch_prod_data:/meili_data
+    restart: unless-stopped
+    # No exponer puerto en producción (usar proxy reverso)
+    # ports:
+    #   - "7700:7700"
+
+    # MinIO para producción
+  minio:
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-change_this_password}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_CONSOLE_URL:-https://minio-console.yourdomain.com}
+    volumes:
+      - minio_prod_data:/data
+    restart: unless-stopped
+    # No exponer puertos en producción (usar proxy reverso)
+    # ports:
+    #   - "9000:9000"
+    #   - "9001:9001"
+
+    # Backend API para producción
+  api:
+    build:
+      context: ./app/api
+      dockerfile: Dockerfile.prod
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME:-ecommerce_user}
+      DB_PASSWORD: ${DB_PASSWORD:-change_this_password}
+      DB_DATABASE: ${DB_DATABASE:-ecommerce_prod}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MEILI_HOST: http://meilisearch:7700
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      WEBPAY_COMMERCE_CODE: ${WEBPAY_COMMERCE_CODE}
+      WEBPAY_API_KEY: ${WEBPAY_API_KEY}
+      WEBPAY_ENVIRONMENT: production
+      WEBPAY_RETURN_URL: ${WEBPAY_RETURN_URL}
+    ports:
+      - "3002:3002"
+    depends_on:
+      - db
+      - redis
+      - meilisearch
+      - minio
+    restart: unless-stopped
+    # Configuraciones de salud
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3002/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend para producción
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.prod
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3002}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+    # Configuraciones de salud
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx como proxy reverso (opcional)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - web
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_prod_data:
+    driver: local
+  redis_prod_data:
+    driver: local
+  meilisearch_prod_data:
+    driver: local
+  minio_prod_data:
+    driver: local
+
+networks:
+  default:
+    name: shopping_ecommerce_prod
+    driver: bridge
