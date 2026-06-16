@@ -9,9 +9,11 @@ import { Cart } from '../cart/entities/cart.entity';
 import { CartItem } from '../cart/entities/cart-item.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Category, Product, Cart, CartItem])],
+  imports: [
+    TypeOrmModule.forFeature([User, Category, Product, Cart, CartItem]),
+  ],
   controllers: [SeedController],
   providers: [SeedService],
   exports: [SeedService],
 })
-export class SeedModule { }
+export class SeedModule {}

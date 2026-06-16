@@ -23,7 +23,7 @@ export class CartService {
     private readonly cartItemRepository: Repository<CartItem>,
     private readonly productsService: ProductsService,
     private readonly redisService: RedisService,
-  ) { }
+  ) {}
 
   // --- Métodos para usuarios autenticados (PostgreSQL) ---
 
@@ -35,7 +35,9 @@ export class CartService {
       throw new NotFoundException(`Product with ID ${productId} not found`);
     }
     if (product.stock < quantity) {
-      throw new BadRequestException(`Not enough stock for product ${product.name}`);
+      throw new BadRequestException(
+        `Not enough stock for product ${product.name}`,
+      );
     }
 
     let cart = await this.cartRepository.findOne({
@@ -77,7 +79,10 @@ export class CartService {
     return this.formatCartResponse(cart);
   }
 
-  async removeFromCartPersistent(userId: number, productId: number): Promise<Cart> {
+  async removeFromCartPersistent(
+    userId: number,
+    productId: number,
+  ): Promise<Cart> {
     const cart = await this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: ['items', 'items.product'],
@@ -87,7 +92,9 @@ export class CartService {
       throw new NotFoundException('Cart not found');
     }
 
-    const itemIndex = cart.items.findIndex((item) => item.product.id === productId);
+    const itemIndex = cart.items.findIndex(
+      (item) => item.product.id === productId,
+    );
     if (itemIndex === -1) {
       throw new NotFoundException(`Product with ID ${productId} not in cart`);
     }
@@ -97,7 +104,9 @@ export class CartService {
   }
 
   async clearCartPersistent(userId: number): Promise<void> {
-    const cart = await this.cartRepository.findOne({ where: { user: { id: userId } } });
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+    });
     if (cart) {
       await this.cartRepository.remove(cart);
     }
@@ -117,14 +126,20 @@ export class CartService {
     const { productId, quantity } = dto;
     const product = await this.productsService.findOne(productId);
 
-    if (!product) throw new NotFoundException(`Product with ID ${productId} not found`);
-    if (product.stock < quantity) throw new BadRequestException(`Not enough stock for product ${product.name}`);
+    if (!product)
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    if (product.stock < quantity)
+      throw new BadRequestException(
+        `Not enough stock for product ${product.name}`,
+      );
 
     const cartKey = `cart:${sessionId}`;
     const rawCart = await this.redisService.get(cartKey);
-    let cart = rawCart ? JSON.parse(rawCart) : { items: [] };
+    const cart = rawCart ? JSON.parse(rawCart) : { items: [] };
 
-    const itemIndex = cart.items.findIndex((item) => item.productId === productId);
+    const itemIndex = cart.items.findIndex(
+      (item) => item.productId === productId,
+    );
 
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;
@@ -160,7 +175,7 @@ export class CartService {
     const rawCart = await this.redisService.get(cartKey);
     if (!rawCart) throw new NotFoundException('Cart not found');
 
-    let cart = JSON.parse(rawCart);
+    const cart = JSON.parse(rawCart);
     cart.items = cart.items.filter((item) => item.productId !== productId);
 
     await this.redisService.set(cartKey, JSON.stringify(cart), REDIS_CART_TTL);

@@ -14,7 +14,7 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) { }
+  ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const { categoryId, ...productData } = createProductDto;
@@ -115,7 +115,9 @@ export class ProductsService {
         id: updateProductDto.categoryId,
       });
       if (!category) {
-        throw new NotFoundException(`Category with ID "${updateProductDto.categoryId}" not found`);
+        throw new NotFoundException(
+          `Category with ID "${updateProductDto.categoryId}" not found`,
+        );
       }
       product.category = category;
     }

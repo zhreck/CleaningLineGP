@@ -1,6 +1,7 @@
 "use client";
+export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { commitWebpayPayment } from "../../../lib/paymentsApi";
@@ -14,7 +15,7 @@ type PaymentResult = {
     paymentTypeCode?: string;
 };
 
-export default function PaymentResultPage() {
+function PaymentResultContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [result, setResult] = useState<PaymentResult | null>(null);
@@ -219,5 +220,13 @@ export default function PaymentResultPage() {
                 </Link>
             </div>
         </section>
+    );
+}
+
+export default function PaymentResultPage() {
+    return (
+        <Suspense fallback={<div className="mx-auto max-w-3xl py-12 text-center">Cargando...</div>}>
+            <PaymentResultContent />
+        </Suspense>
     );
 }

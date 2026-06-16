@@ -8,7 +8,7 @@ export class RedisService {
   private readonly redisClient: Redis;
 
   constructor(@InjectQueue('redis-queue') queue: Queue) {
-    this.redisClient = queue.client as Redis;
+    this.redisClient = queue.client;
   }
 
   async get(key: string): Promise<string | null> {

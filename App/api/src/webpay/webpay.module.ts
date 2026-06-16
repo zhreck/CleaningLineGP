@@ -7,13 +7,9 @@ import { Order } from '../orders/entities/order.entity';
 import { OrdersModule } from '../orders/orders.module';
 
 @Module({
-    imports: [
-        ConfigModule,
-        TypeOrmModule.forFeature([Order]),
-        OrdersModule,
-    ],
-    controllers: [WebpayController],
-    providers: [WebpayService],
-    exports: [WebpayService],
+  imports: [ConfigModule, TypeOrmModule.forFeature([Order]), OrdersModule],
+  controllers: [WebpayController],
+  providers: [WebpayService],
+  exports: [WebpayService],
 })
-export class WebpayModule { }
+export class WebpayModule {}

@@ -23,7 +23,7 @@ import { User } from '../auth/entities/user.entity';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) { }
+  constructor(private readonly ordersService: OrdersService) {}
 
   @UseGuards(OptionalJwtAuthGuard)
   @Post('checkout')
@@ -35,10 +35,7 @@ export class OrdersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id/complete')
-  completeOrder(
-    @Param('id', ParseIntPipe) id: number,
-    @Req() req: Request,
-  ) {
+  completeOrder(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
     return this.ordersService.completeOrder(id, (req.user as User).id);
   }
 
@@ -64,10 +61,7 @@ export class OrdersController {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':id')
-  async findOne(
-    @Param('id', ParseIntPipe) id: number,
-    @Req() req: Request,
-  ) {
+  async findOne(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
     const user = req.user as User | undefined;
     const order = await this.ordersService.findOne(id);
 

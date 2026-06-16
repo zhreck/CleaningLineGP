@@ -4,7 +4,7 @@
  * Intercepta responses 401 para renovar token automáticamente
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
 // Variable en memoria para el access token
 let accessToken: string | null = null;
@@ -59,22 +59,22 @@ async function apiRequest<T = any>(
 
     const url = `${API_BASE_URL}${endpoint}`;
 
-    const config: RequestInit = {
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...headers,
-        },
-        credentials, // Siempre incluir cookies
+    // Construir headers de manera type-safe
+    const requestHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...headers,
     };
 
     // Agregar access token si existe
     if (accessToken) {
-        config.headers = {
-            ...config.headers,
-            Authorization: `Bearer ${accessToken}`,
-        };
+        requestHeaders['Authorization'] = `Bearer ${accessToken}`;
     }
+
+    const config: RequestInit = {
+        method,
+        headers: requestHeaders,
+        credentials,
+    };
 
     // Agregar body si existe
     if (body) {
@@ -90,10 +90,8 @@ async function apiRequest<T = any>(
 
             if (newToken) {
                 // Reintentar la request original con el nuevo token
-                config.headers = {
-                    ...config.headers,
-                    Authorization: `Bearer ${newToken}`,
-                };
+                requestHeaders['Authorization'] = `Bearer ${newToken}`;
+                config.headers = requestHeaders;
                 response = await fetch(url, config);
             } else {
                 // Si no se pudo renovar, redirigir a login

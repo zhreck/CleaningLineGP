@@ -26,4 +26,3 @@ export class Cart {
   @JoinColumn({ name: 'user_id' }) // Esto especifica que la columna en la BD se llamará 'user_id'
   user: User;
 }
-

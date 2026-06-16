@@ -72,7 +72,7 @@ cd web && npm run dev
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3002
 - **Swagger Docs**: http://localhost:3002/api/docs
-- **SigNoz Dashboard**: http://localhost:8080
+- **SigNoz Dashboard**: http://localhost:3301
 
 ## 📖 Documentación Completa
 

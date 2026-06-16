@@ -1,4 +1,6 @@
 // web/app/page.tsx
+export const dynamic = 'force-dynamic';
+
 import Link from "next/link";
 import OffersCarousel from "../components/carousel/offersCarousel";
 import ProductGrid from "../components/products/productGrid";

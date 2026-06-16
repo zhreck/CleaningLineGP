@@ -142,7 +142,7 @@ docker compose up -d
 ```
 
 #### Verificar SigNoz
-- Abrir http://localhost:8080
+- Abrir http://localhost:3301
 - Crear cuenta de administrador
 - SigNoz estará listo para recibir telemetrías
 
@@ -215,7 +215,7 @@ Una vez que todo esté corriendo:
 | **Frontend** | http://localhost:3000 | Aplicación web principal |
 | **Backend API** | http://localhost:3002 | API REST + Swagger docs |
 | **Swagger Docs** | http://localhost:3002/api/docs | Documentación de API |
-| **SigNoz** | http://localhost:8080 | Dashboard de observabilidad |
+| **SigNoz** | http://localhost:3301 | Dashboard de observabilidad |
 | **MinIO Console** | http://localhost:9001 | Gestión de archivos |
 | **Meilisearch** | http://localhost:7700 | Motor de búsqueda |
 
@@ -264,7 +264,7 @@ npm test
 ## 📊 Monitoreo y Observabilidad
 
 ### SigNoz Dashboard
-1. Abrir http://localhost:8080
+1. Abrir http://localhost:3301
 2. Ir a **Services** → Buscar `shopping-ecommerce-api`
 3. Ver métricas de:
    - Latencia de requests

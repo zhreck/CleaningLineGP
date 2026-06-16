@@ -30,15 +30,25 @@ export class CartController {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
-  async addToCart(@Req() req, @Res({ passthrough: true }) res: Response, @Body() addToCartDto: AddToCartDto) {
+  async addToCart(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+    @Body() addToCartDto: AddToCartDto,
+  ) {
     if (req.user) {
-      const cart = await this.cartService.addToCartPersistent(req.user.id, addToCartDto);
+      const cart = await this.cartService.addToCartPersistent(
+        req.user.id,
+        addToCartDto,
+      );
       return cart;
     } else {
       let sessionId = req.cookies[SESSION_COOKIE];
       if (!sessionId) {
         sessionId = randomUUID();
-        res.cookie(SESSION_COOKIE, sessionId, { httpOnly: true, sameSite: 'strict' });
+        res.cookie(SESSION_COOKIE, sessionId, {
+          httpOnly: true,
+          sameSite: 'strict',
+        });
       }
       return this.cartService.addToCartGuest(sessionId, addToCartDto);
     }
@@ -61,7 +71,10 @@ export class CartController {
   @UseGuards(OptionalJwtAuthGuard)
   @Delete(':productId')
   @HttpCode(HttpStatus.OK)
-  async removeFromCart(@Req() req, @Param('productId', ParseIntPipe) productId: number) {
+  async removeFromCart(
+    @Req() req,
+    @Param('productId', ParseIntPipe) productId: number,
+  ) {
     if (req.user) {
       return this.cartService.removeFromCartPersistent(req.user.id, productId);
     } else {

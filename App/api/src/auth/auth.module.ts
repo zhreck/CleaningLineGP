@@ -19,7 +19,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       useFactory: (configService: ConfigService) => {
         const secret = configService.get<string>('JWT_SECRET');
         if (!secret) {
-          throw new Error('JWT_SECRET is not defined in the environment variables');
+          throw new Error(
+            'JWT_SECRET is not defined in the environment variables',
+          );
         }
         return {
           secret: secret,

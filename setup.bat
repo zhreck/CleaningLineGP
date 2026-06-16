@@ -107,7 +107,7 @@ if /i "%install_signoz%"=="y" (
     docker compose up -d
     cd ..\..\..
     
-    echo [SUCCESS] SigNoz configurado. Accede en http://localhost:8080
+    echo [SUCCESS] SigNoz configurado. Accede en http://localhost:3301
 ) else (
     echo [WARNING] SigNoz no será instalado. Puedes instalarlo manualmente más tarde.
 )
@@ -131,7 +131,7 @@ echo URLs de acceso:
 echo - Frontend:     http://localhost:3000
 echo - Backend API:  http://localhost:3002
 echo - Swagger Docs: http://localhost:3002/api/docs
-echo - SigNoz:       http://localhost:8080 (si fue instalado)
+echo "- SigNoz:       http://localhost:3301 (si fue instalado)"
 echo - MinIO:        http://localhost:9001 (admin/adminadmin)
 echo.
 echo Para más información, consulta DEPLOYMENT-GUIDE.md

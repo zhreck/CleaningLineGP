@@ -27,7 +27,7 @@ import { PaginationDto } from './dto/pagination.dto';
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Post()
   @ApiOperation({
@@ -54,7 +54,8 @@ export class ProductsController {
   @Get()
   @ApiOperation({
     summary: 'Get all products',
-    description: 'Retrieve all products without pagination. Use /paginated endpoint for better performance with large datasets.',
+    description:
+      'Retrieve all products without pagination. Use /paginated endpoint for better performance with large datasets.',
   })
   @ApiResponse({
     status: 200,
@@ -67,7 +68,8 @@ export class ProductsController {
   @Get('paginated')
   @ApiOperation({
     summary: 'Get paginated products',
-    description: 'Retrieve products with server-side pagination and optional filtering by search term and category. Supports efficient loading of large product catalogs.',
+    description:
+      'Retrieve products with server-side pagination and optional filtering by search term and category. Supports efficient loading of large product catalogs.',
   })
   @ApiQuery({
     name: 'page',
@@ -111,13 +113,23 @@ export class ProductsController {
               id: { type: 'number', example: 1 },
               name: { type: 'string', example: 'Gaming Laptop Pro' },
               slug: { type: 'string', example: 'gaming-laptop-pro' },
-              description: { type: 'string', example: 'High-performance gaming laptop' },
+              description: {
+                type: 'string',
+                example: 'High-performance gaming laptop',
+              },
               price: { type: 'number', example: 1299.99 },
               stock: { type: 'number', example: 15 },
-              imageUrl: { type: 'string', example: 'https://example.com/image.jpg' },
+              imageUrl: {
+                type: 'string',
+                example: 'https://example.com/image.jpg',
+              },
               isFeatured: { type: 'boolean', example: true },
               isOnSale: { type: 'boolean', example: false },
-              discountPercent: { type: 'number', nullable: true, example: null },
+              discountPercent: {
+                type: 'number',
+                nullable: true,
+                example: null,
+              },
               category: {
                 type: 'object',
                 properties: {
@@ -129,10 +141,26 @@ export class ProductsController {
             },
           },
         },
-        total: { type: 'number', example: 150, description: 'Total number of products matching filters' },
-        page: { type: 'number', example: 1, description: 'Current page number' },
-        lastPage: { type: 'number', example: 8, description: 'Last page number' },
-        hasMore: { type: 'boolean', example: true, description: 'Whether more pages are available' },
+        total: {
+          type: 'number',
+          example: 150,
+          description: 'Total number of products matching filters',
+        },
+        page: {
+          type: 'number',
+          example: 1,
+          description: 'Current page number',
+        },
+        lastPage: {
+          type: 'number',
+          example: 8,
+          description: 'Last page number',
+        },
+        hasMore: {
+          type: 'boolean',
+          example: true,
+          description: 'Whether more pages are available',
+        },
       },
     },
   })
@@ -146,7 +174,10 @@ export class ProductsController {
         message: {
           type: 'array',
           items: { type: 'string' },
-          example: ['page must not be less than 1', 'limit must not be greater than 100'],
+          example: [
+            'page must not be less than 1',
+            'limit must not be greater than 100',
+          ],
         },
         error: { type: 'string', example: 'Bad Request' },
       },

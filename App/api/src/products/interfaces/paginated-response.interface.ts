@@ -1,7 +1,7 @@
 export interface PaginatedResponse<T> {
-    items: T[];
-    total: number;
-    page: number;
-    lastPage: number;
-    hasMore: boolean;
+  items: T[];
+  total: number;
+  page: number;
+  lastPage: number;
+  hasMore: boolean;
 }

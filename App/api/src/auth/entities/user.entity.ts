@@ -24,7 +24,13 @@ export class User {
   @Column({ type: 'varchar', length: 255, select: false }) // `select: false` para no devolverla por defecto
   password: string;
 
-  @Column({ name: 'hashed_refresh_token', type: 'varchar', length: 255, nullable: true, select: false })
+  @Column({
+    name: 'hashed_refresh_token',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    select: false,
+  })
   hashedRefreshToken?: string | null;
 
   @Column({

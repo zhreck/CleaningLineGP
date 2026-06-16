@@ -158,7 +158,7 @@ setup_signoz() {
         docker compose up -d
         cd ../../..
         
-        print_success "SigNoz configurado. Accede en http://localhost:8080"
+        print_success "SigNoz configurado. Accede en http://localhost:3301"
     else
         print_warning "SigNoz no será instalado. Puedes instalarlo manualmente más tarde."
     fi
@@ -184,7 +184,7 @@ show_final_info() {
     echo "- Frontend:     http://localhost:3000"
     echo "- Backend API:  http://localhost:3002"
     echo "- Swagger Docs: http://localhost:3002/api/docs"
-    echo "- SigNoz:       http://localhost:8080 (si fue instalado)"
+    echo "- SigNoz:       http://localhost:3301 (si fue instalado)"
     echo "- MinIO:        http://localhost:9001 (admin/adminadmin)"
     echo
     echo "Para más información, consulta DEPLOYMENT-GUIDE.md"

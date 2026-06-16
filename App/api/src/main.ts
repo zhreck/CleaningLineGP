@@ -13,7 +13,9 @@ async function bootstrap() {
   // Swagger API Documentation Setup
   const config = new DocumentBuilder()
     .setTitle('E-commerce API')
-    .setDescription('API documentation for the e-commerce platform with pagination support')
+    .setDescription(
+      'API documentation for the e-commerce platform with pagination support',
+    )
     .setVersion('1.0')
     .addTag('Products', 'Product management endpoints with pagination')
     .addTag('Categories', 'Category management endpoints')
@@ -60,7 +62,7 @@ async function bootstrap() {
   span.setAttributes({
     'app.name': 'shopping-ecommerce-api',
     'app.version': '1.0.0',
-    'startup.port': port.toString()
+    'startup.port': port.toString(),
   });
   span.addEvent('Application started successfully');
   span.end();

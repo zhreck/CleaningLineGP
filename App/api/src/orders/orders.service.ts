@@ -22,7 +22,7 @@ export class OrdersService {
     private readonly orderItemRepository: Repository<OrderItem>,
     private readonly cartService: CartService,
     private readonly productsService: ProductsService,
-  ) { }
+  ) {}
 
   async createOrderFromCart(
     createOrderDto: CreateOrderDto,
@@ -48,7 +48,7 @@ export class OrdersService {
       }
 
       // Convertir items del DTO a formato compatible
-      orderItems = createOrderDto.items.map(item => ({
+      orderItems = createOrderDto.items.map((item) => ({
         product: { id: item.productId },
         quantity: item.quantity,
         price: item.price,
@@ -155,7 +155,8 @@ export class OrdersService {
       where: { id },
       relations: ['user', 'items', 'items.product'],
     });
-    if (!order) throw new NotFoundException(`Orden con ID ${id} no encontrada.`);
+    if (!order)
+      throw new NotFoundException(`Orden con ID ${id} no encontrada.`);
     return order;
   }
 
@@ -165,11 +166,14 @@ export class OrdersService {
     });
 
     const totalOrders = orders.length;
-    const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total), 0);
+    const totalRevenue = orders.reduce(
+      (sum, order) => sum + Number(order.total),
+      0,
+    );
 
     // Contar clientes únicos (usuarios registrados + emails de invitados)
     const uniqueEmails = new Set<string>();
-    orders.forEach(order => {
+    orders.forEach((order) => {
       if (order.user) {
         uniqueEmails.add(order.user.email);
       } else if (order.customerEmail) {
@@ -179,12 +183,14 @@ export class OrdersService {
     const totalCustomers = uniqueEmails.size;
 
     // Órdenes activas (pending)
-    const activeOrders = orders.filter(o => o.status === OrderStatus.PENDING).length;
+    const activeOrders = orders.filter(
+      (o) => o.status === OrderStatus.PENDING,
+    ).length;
 
     // Top productos (más vendidos por cantidad)
     const productSales = new Map<number, { name: string; quantity: number }>();
-    orders.forEach(order => {
-      order.items.forEach(item => {
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
         const existing = productSales.get(item.product.id);
         if (existing) {
           existing.quantity += item.quantity;

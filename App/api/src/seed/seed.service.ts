@@ -23,7 +23,7 @@ export class SeedService {
     private readonly cartRepository: Repository<Cart>,
     @InjectRepository(CartItem)
     private readonly cartItemRepository: Repository<CartItem>,
-  ) { }
+  ) {}
 
   /**
    * Genera un slug a partir del nombre
@@ -193,7 +193,9 @@ export class SeedService {
         totalCreated++;
       }
 
-      this.logger.log(`  - Created ${categoryData.products.length} products for "${category.name}"`);
+      this.logger.log(
+        `  - Created ${categoryData.products.length} products for "${category.name}"`,
+      );
     }
 
     this.logger.log(`  - Total products created: ${totalCreated}`);
@@ -209,7 +211,8 @@ export class SeedService {
         products: [
           {
             name: 'Cloro Líquido 1L',
-            description: 'Cloro líquido concentrado para desinfección de superficies, ideal para baños y cocinas.',
+            description:
+              'Cloro líquido concentrado para desinfección de superficies, ideal para baños y cocinas.',
             price: 2490,
             stock: 150,
             isFeatured: true,
@@ -218,7 +221,8 @@ export class SeedService {
           },
           {
             name: 'Cloro Gel 900ml',
-            description: 'Cloro en gel adherente para limpieza profunda de inodoros y superficies verticales.',
+            description:
+              'Cloro en gel adherente para limpieza profunda de inodoros y superficies verticales.',
             price: 3290,
             stock: 120,
             isFeatured: false,
@@ -226,7 +230,8 @@ export class SeedService {
           },
           {
             name: 'Desinfectante Multiuso 1L',
-            description: 'Desinfectante líquido con aroma a lavanda, elimina 99.9% de bacterias y virus.',
+            description:
+              'Desinfectante líquido con aroma a lavanda, elimina 99.9% de bacterias y virus.',
             price: 3990,
             stock: 100,
             isFeatured: true,
@@ -234,7 +239,8 @@ export class SeedService {
           },
           {
             name: 'Cloro Industrial 5L',
-            description: 'Cloro concentrado de uso industrial, ideal para grandes superficies y empresas.',
+            description:
+              'Cloro concentrado de uso industrial, ideal para grandes superficies y empresas.',
             price: 8990,
             stock: 60,
             isFeatured: false,
@@ -243,7 +249,8 @@ export class SeedService {
           },
           {
             name: 'Desinfectante Pino 2L',
-            description: 'Desinfectante con aroma a pino, limpia y desinfecta pisos y superficies.',
+            description:
+              'Desinfectante con aroma a pino, limpia y desinfecta pisos y superficies.',
             price: 4590,
             stock: 80,
             isFeatured: false,
@@ -251,7 +258,8 @@ export class SeedService {
           },
           {
             name: 'Alcohol Gel Antibacterial 1L',
-            description: 'Alcohol gel 70% para desinfección de manos, con glicerina para suavidad.',
+            description:
+              'Alcohol gel 70% para desinfección de manos, con glicerina para suavidad.',
             price: 5990,
             stock: 200,
             isFeatured: true,
@@ -259,7 +267,8 @@ export class SeedService {
           },
           {
             name: 'Toallas Desinfectantes 80 unidades',
-            description: 'Toallas húmedas desinfectantes para superficies, elimina gérmenes al instante.',
+            description:
+              'Toallas húmedas desinfectantes para superficies, elimina gérmenes al instante.',
             price: 4490,
             stock: 90,
             isFeatured: false,
@@ -268,7 +277,8 @@ export class SeedService {
           },
           {
             name: 'Spray Desinfectante 500ml',
-            description: 'Spray desinfectante multiuso, ideal para superficies de contacto frecuente.',
+            description:
+              'Spray desinfectante multiuso, ideal para superficies de contacto frecuente.',
             price: 3790,
             stock: 110,
             isFeatured: false,
@@ -276,7 +286,8 @@ export class SeedService {
           },
           {
             name: 'Cloro Perfumado 1L',
-            description: 'Cloro con fragancia floral, desinfecta y deja un aroma agradable.',
+            description:
+              'Cloro con fragancia floral, desinfecta y deja un aroma agradable.',
             price: 2990,
             stock: 130,
             isFeatured: false,
@@ -284,7 +295,8 @@ export class SeedService {
           },
           {
             name: 'Desinfectante Eucalipto 1L',
-            description: 'Desinfectante con aroma a eucalipto, ideal para ambientes cerrados.',
+            description:
+              'Desinfectante con aroma a eucalipto, ideal para ambientes cerrados.',
             price: 3890,
             stock: 95,
             isFeatured: false,
@@ -297,7 +309,8 @@ export class SeedService {
         products: [
           {
             name: 'Detergente Líquido 3L',
-            description: 'Detergente líquido concentrado para ropa, elimina manchas difíciles y cuida las telas.',
+            description:
+              'Detergente líquido concentrado para ropa, elimina manchas difíciles y cuida las telas.',
             price: 6990,
             stock: 85,
             isFeatured: true,
@@ -305,7 +318,8 @@ export class SeedService {
           },
           {
             name: 'Limpiador de Pisos 2L',
-            description: 'Limpiador líquido para todo tipo de pisos, deja brillo sin enjuague.',
+            description:
+              'Limpiador líquido para todo tipo de pisos, deja brillo sin enjuague.',
             price: 4290,
             stock: 100,
             isFeatured: false,
@@ -314,7 +328,8 @@ export class SeedService {
           },
           {
             name: 'Lavavajillas Líquido 1L',
-            description: 'Lavavajillas concentrado con aroma a limón, elimina grasa fácilmente.',
+            description:
+              'Lavavajillas concentrado con aroma a limón, elimina grasa fácilmente.',
             price: 2990,
             stock: 140,
             isFeatured: false,
@@ -322,7 +337,8 @@ export class SeedService {
           },
           {
             name: 'Limpia Vidrios 500ml',
-            description: 'Limpiador de vidrios y espejos, no deja rayas ni residuos.',
+            description:
+              'Limpiador de vidrios y espejos, no deja rayas ni residuos.',
             price: 2490,
             stock: 120,
             isFeatured: false,
@@ -330,7 +346,8 @@ export class SeedService {
           },
           {
             name: 'Desengrasante Cocina 1L',
-            description: 'Desengrasante potente para cocinas, hornos y campanas extractoras.',
+            description:
+              'Desengrasante potente para cocinas, hornos y campanas extractoras.',
             price: 4590,
             stock: 70,
             isFeatured: true,
@@ -339,7 +356,8 @@ export class SeedService {
           },
           {
             name: 'Limpiador Multiuso 1L',
-            description: 'Limpiador multiuso para todas las superficies del hogar.',
+            description:
+              'Limpiador multiuso para todas las superficies del hogar.',
             price: 3490,
             stock: 110,
             isFeatured: false,
@@ -347,7 +365,8 @@ export class SeedService {
           },
           {
             name: 'Suavizante de Ropa 2L',
-            description: 'Suavizante concentrado con aroma floral, deja la ropa suave y perfumada.',
+            description:
+              'Suavizante concentrado con aroma floral, deja la ropa suave y perfumada.',
             price: 4990,
             stock: 90,
             isFeatured: false,
@@ -355,7 +374,8 @@ export class SeedService {
           },
           {
             name: 'Limpiador de Baños 1L',
-            description: 'Limpiador especializado para baños, elimina sarro y manchas difíciles.',
+            description:
+              'Limpiador especializado para baños, elimina sarro y manchas difíciles.',
             price: 3790,
             stock: 100,
             isFeatured: false,
@@ -363,7 +383,8 @@ export class SeedService {
           },
           {
             name: 'Quitamanchas Ropa 500ml',
-            description: 'Quitamanchas pre-lavado, efectivo contra manchas de grasa, vino y café.',
+            description:
+              'Quitamanchas pre-lavado, efectivo contra manchas de grasa, vino y café.',
             price: 3990,
             stock: 80,
             isFeatured: false,
@@ -372,7 +393,8 @@ export class SeedService {
           },
           {
             name: 'Limpiador de Muebles 500ml',
-            description: 'Limpiador y abrillantador para muebles de madera, nutre y protege.',
+            description:
+              'Limpiador y abrillantador para muebles de madera, nutre y protege.',
             price: 4290,
             stock: 65,
             isFeatured: false,
@@ -385,7 +407,8 @@ export class SeedService {
         products: [
           {
             name: 'Detergente Industrial 20L',
-            description: 'Detergente industrial concentrado para lavado de ropa en lavanderías.',
+            description:
+              'Detergente industrial concentrado para lavado de ropa en lavanderías.',
             price: 18990,
             stock: 30,
             isFeatured: true,
@@ -393,7 +416,8 @@ export class SeedService {
           },
           {
             name: 'Desengrasante Industrial 5L',
-            description: 'Desengrasante de alta potencia para talleres y fábricas.',
+            description:
+              'Desengrasante de alta potencia para talleres y fábricas.',
             price: 12990,
             stock: 40,
             isFeatured: false,
@@ -402,7 +426,8 @@ export class SeedService {
           },
           {
             name: 'Limpiador de Pisos Industrial 10L',
-            description: 'Limpiador concentrado para pisos industriales, alto rendimiento.',
+            description:
+              'Limpiador concentrado para pisos industriales, alto rendimiento.',
             price: 14990,
             stock: 35,
             isFeatured: false,
@@ -410,7 +435,8 @@ export class SeedService {
           },
           {
             name: 'Desinfectante Industrial 10L',
-            description: 'Desinfectante de grado industrial, elimina bacterias y virus.',
+            description:
+              'Desinfectante de grado industrial, elimina bacterias y virus.',
             price: 16990,
             stock: 25,
             isFeatured: true,
@@ -418,7 +444,8 @@ export class SeedService {
           },
           {
             name: 'Jabón Líquido Industrial 20L',
-            description: 'Jabón líquido para uso industrial, ideal para dispensadores.',
+            description:
+              'Jabón líquido para uso industrial, ideal para dispensadores.',
             price: 15990,
             stock: 30,
             isFeatured: false,
@@ -435,7 +462,8 @@ export class SeedService {
           },
           {
             name: 'Cloro Industrial 20L',
-            description: 'Cloro concentrado en bidón de 20 litros para uso industrial.',
+            description:
+              'Cloro concentrado en bidón de 20 litros para uso industrial.',
             price: 17990,
             stock: 20,
             isFeatured: false,
@@ -443,7 +471,8 @@ export class SeedService {
           },
           {
             name: 'Desodorante Ambiental Industrial 5L',
-            description: 'Desodorante ambiental concentrado para grandes espacios.',
+            description:
+              'Desodorante ambiental concentrado para grandes espacios.',
             price: 11990,
             stock: 40,
             isFeatured: false,
@@ -451,7 +480,8 @@ export class SeedService {
           },
           {
             name: 'Limpiador de Vidrios Industrial 5L',
-            description: 'Limpiador de vidrios concentrado para uso profesional.',
+            description:
+              'Limpiador de vidrios concentrado para uso profesional.',
             price: 8990,
             stock: 45,
             isFeatured: false,
@@ -459,7 +489,8 @@ export class SeedService {
           },
           {
             name: 'Quitasarro Industrial 5L',
-            description: 'Quitasarro potente para baños y sanitarios industriales.',
+            description:
+              'Quitasarro potente para baños y sanitarios industriales.',
             price: 10990,
             stock: 35,
             isFeatured: false,
@@ -473,7 +504,8 @@ export class SeedService {
         products: [
           {
             name: 'Jabón Líquido Manos 1L',
-            description: 'Jabón líquido antibacterial para manos, con glicerina y aloe vera.',
+            description:
+              'Jabón líquido antibacterial para manos, con glicerina y aloe vera.',
             price: 3490,
             stock: 150,
             isFeatured: true,
@@ -481,7 +513,8 @@ export class SeedService {
           },
           {
             name: 'Shampoo Uso Frecuente 1L',
-            description: 'Shampoo para uso diario, limpia suavemente sin resecar el cabello.',
+            description:
+              'Shampoo para uso diario, limpia suavemente sin resecar el cabello.',
             price: 4990,
             stock: 100,
             isFeatured: false,
@@ -490,7 +523,8 @@ export class SeedService {
           },
           {
             name: 'Acondicionador 1L',
-            description: 'Acondicionador hidratante, deja el cabello suave y manejable.',
+            description:
+              'Acondicionador hidratante, deja el cabello suave y manejable.',
             price: 4990,
             stock: 95,
             isFeatured: false,
@@ -498,7 +532,8 @@ export class SeedService {
           },
           {
             name: 'Gel de Ducha 1L',
-            description: 'Gel de ducha con aroma fresco, limpia e hidrata la piel.',
+            description:
+              'Gel de ducha con aroma fresco, limpia e hidrata la piel.',
             price: 3990,
             stock: 120,
             isFeatured: false,
@@ -506,7 +541,8 @@ export class SeedService {
           },
           {
             name: 'Jabón en Barra Pack 6 unidades',
-            description: 'Pack de 6 jabones en barra con glicerina, suaves con la piel.',
+            description:
+              'Pack de 6 jabones en barra con glicerina, suaves con la piel.',
             price: 2990,
             stock: 140,
             isFeatured: false,
@@ -515,7 +551,8 @@ export class SeedService {
           },
           {
             name: 'Crema de Manos 500ml',
-            description: 'Crema hidratante para manos, absorción rápida y no grasa.',
+            description:
+              'Crema hidratante para manos, absorción rápida y no grasa.',
             price: 4490,
             stock: 80,
             isFeatured: true,
@@ -523,7 +560,8 @@ export class SeedService {
           },
           {
             name: 'Papel Higiénico 24 rollos',
-            description: 'Papel higiénico suave y resistente, doble hoja, pack de 24 rollos.',
+            description:
+              'Papel higiénico suave y resistente, doble hoja, pack de 24 rollos.',
             price: 8990,
             stock: 60,
             isFeatured: false,
@@ -531,7 +569,8 @@ export class SeedService {
           },
           {
             name: 'Toallas de Papel 6 rollos',
-            description: 'Toallas de papel absorbentes, pack de 6 rollos grandes.',
+            description:
+              'Toallas de papel absorbentes, pack de 6 rollos grandes.',
             price: 5990,
             stock: 70,
             isFeatured: false,
@@ -539,7 +578,8 @@ export class SeedService {
           },
           {
             name: 'Pañuelos Desechables 10 cajas',
-            description: 'Pañuelos faciales suaves, pack de 10 cajas de 100 unidades.',
+            description:
+              'Pañuelos faciales suaves, pack de 10 cajas de 100 unidades.',
             price: 3990,
             stock: 110,
             isFeatured: false,
@@ -548,7 +588,8 @@ export class SeedService {
           },
           {
             name: 'Alcohol Gel 500ml',
-            description: 'Alcohol gel antibacterial 70%, con aloe vera para cuidado de manos.',
+            description:
+              'Alcohol gel antibacterial 70%, con aloe vera para cuidado de manos.',
             price: 3490,
             stock: 180,
             isFeatured: true,

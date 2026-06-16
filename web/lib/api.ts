@@ -1,6 +1,8 @@
 import type { Product } from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+// Use 127.0.0.1 instead of localhost for better compatibility
+// Server components can reach 127.0.0.1:3002, client uses NEXT_PUBLIC_API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3002";
 
 /**
  * Obtiene todos los productos desde el backend

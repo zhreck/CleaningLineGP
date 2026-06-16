@@ -1,11 +1,12 @@
 "use client";
+export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { commitWebpayPayment } from "../../../lib/paymentsApi";
 
-export default function PaymentReturnPage() {
+function PaymentReturnContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -156,5 +157,13 @@ export default function PaymentReturnPage() {
                 </div>
             </div>
         </section>
+    );
+}
+
+export default function PaymentReturnPage() {
+    return (
+        <Suspense fallback={<div className="mx-auto max-w-2xl py-16 text-center">Cargando...</div>}>
+            <PaymentReturnContent />
+        </Suspense>
     );
 }
