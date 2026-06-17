@@ -43,13 +43,16 @@ Frontend (Next.js) ←→ Backend (NestJS) ←→ PostgreSQL
 ```bash
 # 1. Clonar repositorio
 git clone <URL_REPOSITORIO>
-cd Shoping_Ecommerce
+cd CleaningLineGP
 
-# 2. Levantar servicios de infraestructura
+# 2. Configurar variables de entorno
+cp .env.example .env
+
+# 3. Levantar servicios de infraestructura
 docker-compose up -d
 
-# 3. Configurar backend
-cd app/api
+# 4. Configurar backend
+cd App/api
 cp .env.example .env
 npm install
 npm run build
@@ -62,7 +65,7 @@ npm install
 
 # 5. Ejecutar aplicación
 # Terminal 1 - Backend
-cd app/api && npm run start:otel
+cd App/api && npm run start:otel
 
 # Terminal 2 - Frontend  
 cd web && npm run dev
