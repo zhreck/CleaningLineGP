@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
 
   // Optimizaciones de imagen
   images: {
-    domains: ['0.0.0.0'],
+    domains: ['localhost'],
     unoptimized: process.env.NODE_ENV === 'development',
   },
 

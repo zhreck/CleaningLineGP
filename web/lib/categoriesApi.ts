@@ -1,6 +1,8 @@
 /**
- * API de Categorías - MOCK LOCAL (Sin Backend)
+ * API de Categorías - Integración con backend
  */
+
+import { api } from './apiClient';
 
 export type Category = {
     id: number;
@@ -17,26 +19,14 @@ export type UpdateCategoryDto = {
     name: string;
 };
 
-// 1. Base de datos simulada en memoria local
-let categoriasMock: Category[] = [
-    { id: 1, name: "Limpieza", slug: "limpieza", productCount: 6 },
-    { id: 2, name: "Hogar", slug: "hogar", productCount: 0 },
-    { id: 3, name: "Alimentos", slug: "alimentos", productCount: 0 },
-    { id: 4, name: "Cuidado Personal", slug: "cuidado-personal", productCount: 0 }
-];
-
-// Función auxiliar para simular retraso de red (hace que los loaders de tu web funcionen de verdad)
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 /**
  * Obtener todas las categorías
- * MOCK LOCAL
+ * GET /categories
  */
 export async function getCategories(): Promise<Category[]> {
     try {
-        await delay(300); // Pequeña pausa de 300ms para simular carga
-        console.log('[Mock API] getCategories - Devolviendo categorías locales');
-        return [...categoriasMock];
+        const response = await api.get<Category[]>('/categories');
+        return response;
     } catch (error: any) {
         console.error('Error fetching categories:', error);
         throw new Error(error.message || 'Error al obtener categorías');
@@ -45,14 +35,12 @@ export async function getCategories(): Promise<Category[]> {
 
 /**
  * Obtener una categoría por ID
- * MOCK LOCAL
+ * GET /categories/:id
  */
 export async function getCategoryById(id: number): Promise<Category> {
     try {
-        await delay(200);
-        const categoria = categoriasMock.find(c => c.id === id);
-        if (!categoria) throw new Error('Categoría no encontrada');
-        return { ...categoria };
+        const response = await api.get<Category>(`/categories/${id}`);
+        return response;
     } catch (error: any) {
         console.error(`Error fetching category ${id}:`, error);
         throw new Error(error.message || 'Error al obtener categoría');
@@ -61,22 +49,14 @@ export async function getCategoryById(id: number): Promise<Category> {
 
 /**
  * Crear una nueva categoría (solo admin)
- * MOCK LOCAL
+ * POST /categories
  */
 export async function createCategory(
     data: CreateCategoryDto
 ): Promise<Category> {
     try {
-        await delay(500);
-        const nuevaCategoria: Category = {
-            id: categoriasMock.length > 0 ? Math.max(...categoriasMock.map(c => c.id)) + 1 : 1,
-            name: data.name,
-            slug: data.name.toLowerCase().replace(/\s+/g, '-'),
-            productCount: 0
-        };
-        categoriasMock.push(nuevaCategoria);
-        console.log('[Mock API] createCategory - Creada exitosamente:', nuevaCategoria);
-        return nuevaCategoria;
+        const response = await api.post<Category>('/categories', data);
+        return response;
     } catch (error: any) {
         console.error('Error creating category:', error);
         throw new Error(error.message || 'Error al crear categoría');
@@ -85,25 +65,15 @@ export async function createCategory(
 
 /**
  * Actualizar una categoría (solo admin)
- * MOCK LOCAL
+ * PUT /categories/:id
  */
 export async function updateCategory(
     id: number,
     data: UpdateCategoryDto
 ): Promise<Category> {
     try {
-        await delay(500);
-        const index = categoriasMock.findIndex(c => c.id === id);
-        if (index === -1) throw new Error('Categoría no encontrada para actualizar');
-        
-        categoriasMock[index] = {
-            ...categoriasMock[index],
-            name: data.name,
-            slug: data.name.toLowerCase().replace(/\s+/g, '-')
-        };
-        
-        console.log('[Mock API] updateCategory - Actualizada:', categoriasMock[index]);
-        return { ...categoriasMock[index] };
+        const response = await api.put<Category>(`/categories/${id}`, data);
+        return response;
     } catch (error: any) {
         console.error(`Error updating category ${id}:`, error);
         throw new Error(error.message || 'Error al actualizar categoría');
@@ -112,16 +82,11 @@ export async function updateCategory(
 
 /**
  * Eliminar una categoría (solo admin)
- * MOCK LOCAL
+ * DELETE /categories/:id
  */
 export async function deleteCategory(id: number): Promise<void> {
     try {
-        await delay(500);
-        const index = categoriasMock.findIndex(c => c.id === id);
-        if (index === -1) throw new Error('Categoría no encontrada para eliminar');
-        
-        categoriasMock.splice(index, 1);
-        console.log(`[Mock API] deleteCategory - Eliminada categoría con ID: ${id}`);
+        await api.delete(`/categories/${id}`);
     } catch (error: any) {
         console.error(`Error deleting category ${id}:`, error);
         throw new Error(error.message || 'Error al eliminar categoría');

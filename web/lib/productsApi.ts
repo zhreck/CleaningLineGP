@@ -2,7 +2,6 @@
  * API de Productos - Integración completa con backend
  */
 
-import { catalogo } from '@/mockdata/mockCatalogo';
 import { api } from './apiClient';
 import type { Product, PaginatedResponse, ProductFilters } from './types';
 
@@ -103,109 +102,43 @@ export type GetProductsParams = {
  * 
  * @since 1.0.0
  */
-// export async function fetchPaginatedProducts(
-//     page: number = 1,
-//     limit: number = 20,
-//     filters?: ProductFilters
-// ): Promise<PaginatedResponse<Product>> {
-//     // Performance monitoring: Start timing
-//     const startTime = performance.now();
-
-//     try {
-//         // const params = new URLSearchParams();
-//         // params.append('page', page.toString());
-//         // params.append('limit', limit.toString());
-
-//         // if (filters?.search) {
-//         //     params.append('search', filters.search);
-//         // }
-//         // if (filters?.categoryId) {
-//         //     params.append('categoryId', filters.categoryId.toString());
-//         // }
-
-//         // const response = await api.get<PaginatedResponse<Product>>(`/products/paginated?${params.toString()}`);
-
-//         // // Performance monitoring: Log timing
-//         // const endTime = performance.now();
-//         // const duration = endTime - startTime;
-
-//         // // Log performance metrics (only in development)
-//         // if (process.env.NODE_ENV === 'development') {
-//         //     console.log(`[Performance] fetchPaginatedProducts - Page ${page}: ${duration.toFixed(2)}ms`);
-
-//         //     // Warn if request is slow
-//         //     if (duration > 2000) {
-//         //         console.warn(`[Performance Warning] Slow API request: ${duration.toFixed(2)}ms`);
-//         //     }
-//         // }
-
-//         // // Store performance metrics for monitoring
-//         // if (typeof window !== 'undefined' && (window as any).performanceMetrics) {
-//         //     (window as any).performanceMetrics.push({
-//         //         operation: 'fetchPaginatedProducts',
-//         //         page,
-//         //         limit,
-//         //         duration,
-//         //         timestamp: Date.now(),
-//         //         itemsReturned: response.items.length
-//         //     });
-//         // }
-
-//         return catalogo;
-//     } catch (error: any) {
-//         // Performance monitoring: Log error timing
-//         const endTime = performance.now();
-//         const duration = endTime - startTime;
-
-//         if (process.env.NODE_ENV === 'development') {
-//             console.error(`[Performance] fetchPaginatedProducts ERROR - Page ${page}: ${duration.toFixed(2)}ms`, error);
-//         }
-
-//         console.error('Error fetching paginated products:', error);
-//         throw new Error(error.message || 'Error al obtener productos paginados');
-//     }
-// }
-
 export async function fetchPaginatedProducts(
     page: number = 1,
     limit: number = 20,
     filters?: ProductFilters
 ): Promise<PaginatedResponse<Product>> {
-    // Tomamos el tiempo de inicio para tus métricas locales
+    // Performance monitoring: Start timing
     const startTime = performance.now();
 
     try {
-        // 1. Cargamos el catálogo local en memoria (sin tocar internet)
-        let productosFiltrados = [...catalogo] as unknown as Product[];
+        const params = new URLSearchParams();
+        params.append('page', page.toString());
+        params.append('limit', limit.toString());
 
-        // 2. Buscador local simulado (si escribes algo en la barra de búsqueda)
         if (filters?.search) {
-            const busqueda = filters.search.toLowerCase();
-            productosFiltrados = productosFiltrados.filter(p =>
-                (p as any).cat?.toLowerCase().includes(busqueda) ||
-                (p as any).feature?.toLowerCase().includes(busqueda)
-            );
+            params.append('search', filters.search);
+        }
+        if (filters?.categoryId) {
+            params.append('categoryId', filters.categoryId.toString());
         }
 
-        // 3. Cálculos matemáticos de la paginación local
-        const total = productosFiltrados.length;
-        const lastPage = Math.max(1, Math.ceil(total / limit));
+        const response = await api.get<PaginatedResponse<Product>>(`/products/paginated?${params.toString()}`);
 
-        // Cortamos el arreglo según la página solicitada (ej: del 0 al 20)
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + limit;
-        const items = productosFiltrados.slice(startIndex, endIndex);
-
-        const hasMore = page < lastPage;
-
-        // 4. Guardamos las métricas de rendimiento en la consola de desarrollo
+        // Performance monitoring: Log timing
         const endTime = performance.now();
         const duration = endTime - startTime;
 
+        // Log performance metrics (only in development)
         if (process.env.NODE_ENV === 'development') {
-            console.log(`[Mock Performance] fetchPaginatedProducts - Page ${page}: ${duration.toFixed(2)}ms`);
+            console.log(`[Performance] fetchPaginatedProducts - Page ${page}: ${duration.toFixed(2)}ms`);
+
+            // Warn if request is slow
+            if (duration > 2000) {
+                console.warn(`[Performance Warning] Slow API request: ${duration.toFixed(2)}ms`);
+            }
         }
 
+        // Store performance metrics for monitoring
         if (typeof window !== 'undefined' && (window as any).performanceMetrics) {
             (window as any).performanceMetrics.push({
                 operation: 'fetchPaginatedProducts',
@@ -213,28 +146,22 @@ export async function fetchPaginatedProducts(
                 limit,
                 duration,
                 timestamp: Date.now(),
-                itemsReturned: items.length
+                itemsReturned: response.items.length
             });
         }
 
-        // 5. Devolvemos la respuesta formateada para tu frontend
-        return {
-            items,
-            total,
-            page,
-            lastPage,
-            hasMore
-        };
-
+        return response;
     } catch (error: any) {
+        // Performance monitoring: Log error timing
         const endTime = performance.now();
         const duration = endTime - startTime;
 
         if (process.env.NODE_ENV === 'development') {
-            console.error(`[Mock Performance] Error local - Page ${page}: ${duration.toFixed(2)}ms`, error);
+            console.error(`[Performance] fetchPaginatedProducts ERROR - Page ${page}: ${duration.toFixed(2)}ms`, error);
         }
 
-        throw new Error(error.message || 'Error al procesar productos locales');
+        console.error('Error fetching paginated products:', error);
+        throw new Error(error.message || 'Error al obtener productos paginados');
     }
 }
 
