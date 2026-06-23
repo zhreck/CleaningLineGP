@@ -4,12 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Category } from './products/entities/category.entity';
-import { Product } from './products/entities/product.entity'; // Mantén tus importaciones existentes
+import { Product } from './products/entities/product.entity'; 
 import { Cart } from './cart/entities/cart.entity';
 import { CartItem } from './cart/entities/cart-item.entity';
 import { User } from './auth/entities/user.entity';
-import { Order } from './orders/entities/order.entity'; // <-- 1. Importa Order
-import { OrderItem } from './orders/entities/order-item.entity'; // <-- 2. Importa OrderItem
+import { Order } from './orders/entities/order.entity'; 
+import { OrderItem } from './orders/entities/order-item.entity'; 
 import { ProductsModule } from './products/products.module';
 import { RedisModule } from './redis/redis.module';
 import { CartModule } from './cart/cart.module';
@@ -34,9 +34,16 @@ import { PaymentsModule } from './payments/payments.module';
         host: configService.get<string>('DB_HOST', 'localhost'),
         port: +configService.get<number>('DB_PORT', 5432),
         username: configService.get<string>('DB_USERNAME', 'dev'),
-        password: configService.get<string>('DB_PASSWORD', 'devpass'), // Usa tu contraseña por defecto aquí
+        password: configService.get<string>('DB_PASSWORD', 'devpass'), 
         database: configService.get<string>('DB_DATABASE', 'ecommerce'),
-        entities: [Product, Category, Cart, CartItem, User, Order, OrderItem], // <-- 3. Añade las entidades aquí
+        
+        // 👇 AQUÍ ESTÁ LA MAGIA PARA CONECTAR A NEON DB 👇
+        ssl: {
+          rejectUnauthorized: false,
+        },
+        // -----------------------------------------------
+
+        entities: [Product, Category, Cart, CartItem, User, Order, OrderItem], 
         synchronize: true, // En desarrollo, crea/actualiza las tablas automáticamente. No usar en producción.
       }),
     }),

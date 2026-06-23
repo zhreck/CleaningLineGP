@@ -1,16 +1,17 @@
 services:
-  db:
-    image: postgres:16
-    container_name: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
+  # 🚫 COMENTADO: Ya no necesitas la BD local porque estás usando Neon (Cloud)
+  # db:
+  #   image: postgres:16
+  #   container_name: postgres
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7
@@ -44,7 +45,7 @@ services:
       - minio_data:/data
 
 volumes:
-  db_data:
+  # db_data: # Comentado porque ya no usamos la base de datos local
   meili_data:
   minio_data:
 
