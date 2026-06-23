@@ -8,7 +8,7 @@ import { trace } from '@opentelemetry/api';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(cookieParser());
+  app.enableCors();
 
   // Swagger API Documentation Setup
   const config = new DocumentBuilder()
@@ -47,8 +47,10 @@ async function bootstrap() {
   );
 
   // Habilitar CORS para el frontend en Next (localhost:3000)
+ // Habilitar CORS para el frontend en Next (localhost:3000)
+ // Habilitar CORS dinámico (Para que funcione en Codespaces y en Local)
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: true, // El valor "true" permite cualquier URL de origen de forma dinámica
     credentials: true,
   });
 
