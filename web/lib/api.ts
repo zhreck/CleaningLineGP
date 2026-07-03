@@ -1,8 +1,38 @@
 import type { Product } from "./types";
 
-// Use 127.0.0.1 instead of localhost for better compatibility
-// Server components can reach 127.0.0.1:3002, client uses NEXT_PUBLIC_API_URL
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3002";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+const API_BASE = API_BASE_URL.replace(/\/$/, "");
+
+async function fetchJsonWithFallback<T>(path: string): Promise<T> {
+  const urls = [`${API_BASE}${path}`, `${API_BASE}/api${path}`];
+
+  let lastError: unknown;
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.ok) {
+        return (await res.json()) as T;
+      }
+
+      if (res.status !== 404) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`Unable to fetch data from ${urls.join(" or ")}`);
+}
 
 /**
  * Obtiene todos los productos desde el backend
@@ -10,20 +40,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3002";
  */
 export async function fetchProducts(): Promise<Product[]> {
   try {
-    const res = await fetch(`${API_URL}/products`, {
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!res.ok) {
-      console.error(`Error fetching products: ${res.status} ${res.statusText}`);
-      return [];
-    }
-
-    const products: Product[] = await res.json();
-    return products;
+    return await fetchJsonWithFallback<Product[]>("/products");
   } catch (error) {
     console.error("Error fetching products:", error);
     return [];
@@ -58,19 +75,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
  */
 export async function fetchProductById(id: number): Promise<Product | null> {
   try {
-    const res = await fetch(`${API_URL}/products/${id}`, {
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!res.ok) {
-      console.error(`Error fetching product ${id}: ${res.status} ${res.statusText}`);
-      return null;
-    }
-
-    const product: Product = await res.json();
+    const product = await fetchJsonWithFallback<Product>(`/products/${id}`);
     return product;
   } catch (error) {
     console.error(`Error fetching product ${id}:`, error);

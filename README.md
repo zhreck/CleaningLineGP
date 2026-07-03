@@ -6,19 +6,34 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 First, run the development server:
 
+# 1. Instalación del Backend
+cd App/api
 npm install
 
-npm install next-themes
+# 2. Instalación del Frontend
+cd ../web
+npm install
 
-```bash
+# Configuración de Variables de Entorno
+# Crea los archivos .env necesarios. Recuerda completar las credenciales (Base de datos Neon, JWT, Webpay, etc.) según corresponda:
+
+# En App/api/.env: Configura DATABASE_URL (Neon Cloud), PORT, JWT_SECRET, entre otros.
+
+# En web/.env.local: Configura NEXT_PUBLIC_API_URL apuntando a la URL pública de tu API (ej: http://localhost:3002/api).
+
+
+# 3.Ejecución del Proyecto
+# Levantar servicios de soporte
+docker-compose up -d
+
+# Iniciar Backend (API)
+cd App/api
+npm run start:dev
+
+# Iniciar Frontend (Web)
+cd web
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

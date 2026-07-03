@@ -4,7 +4,21 @@
  * Intercepta responses 401 para renovar token automáticamente
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+export function resolveApiBaseUrl(configuredUrl: string = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002', currentOrigin: string = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000') {
+    const baseUrl = configuredUrl.replace(/\/$/, '');
+
+    if (baseUrl.includes('localhost')) {
+        const normalizedOrigin = currentOrigin.replace(/\/$/, '');
+        if (normalizedOrigin.includes('127.0.0.1') || normalizedOrigin.includes('localhost')) {
+            return baseUrl.replace('localhost', '127.0.0.1');
+        }
+    }
+
+    return baseUrl;
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
+const API_BASE_URL_WITH_PREFIX = `${API_BASE_URL.replace(/\/$/, '')}/api`;
 
 // Variable en memoria para el access token
 let accessToken: string | null = null;
@@ -57,7 +71,10 @@ async function apiRequest<T = any>(
 ): Promise<T> {
     const { method = 'GET', body, headers = {}, credentials = 'include' } = options;
 
-    const url = `${API_BASE_URL}${endpoint}`;
+    const urls = [
+        `${API_BASE_URL}${endpoint}`,
+        `${API_BASE_URL_WITH_PREFIX}${endpoint}`,
+    ];
 
     // Construir headers de manera type-safe
     const requestHeaders: Record<string, string> = {
@@ -81,8 +98,17 @@ async function apiRequest<T = any>(
         config.body = JSON.stringify(body);
     }
 
+    // Verificar que `fetch` esté disponible (entorno server podría necesitar polyfill)
+    if (typeof fetch === 'undefined') {
+        throw new Error('fetch is not available in this environment. Use Node >=18 or provide a fetch polyfill.');
+    }
+
     try {
-        let response = await fetch(url, config);
+        let response = await fetch(urls[0], config);
+
+        if (response.status === 404 && !endpoint.startsWith('/api')) {
+            response = await fetch(urls[1], config);
+        }
 
         // Si recibimos 401, intentar renovar el token
         if (response.status === 401 && accessToken) {
@@ -92,7 +118,7 @@ async function apiRequest<T = any>(
                 // Reintentar la request original con el nuevo token
                 requestHeaders['Authorization'] = `Bearer ${newToken}`;
                 config.headers = requestHeaders;
-                response = await fetch(url, config);
+                response = await fetch(response.url.includes('/api/') ? urls[1] : urls[0], config);
             } else {
                 // Si no se pudo renovar, redirigir a login
                 if (typeof window !== 'undefined') {
@@ -102,10 +128,21 @@ async function apiRequest<T = any>(
             }
         }
 
-        // Si la respuesta no es OK después del retry, lanzar error
+        // Determinar tipo de contenido
+        const contentType = response.headers.get('content-type') || '';
+        const isJson = contentType.includes('application/json') || contentType.includes('+json');
+
+        // Si la respuesta no es OK después del retry, lanzar error con detalle adecuado
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `HTTP ${response.status}`);
+            if (isJson) {
+                const errorData = await response.json().catch(() => null);
+                const message = (errorData && (errorData.message || errorData.error)) || `HTTP ${response.status}`;
+                throw new Error(message);
+            } else {
+                const text = await response.text().catch(() => '');
+                const short = text ? text.slice(0, 500) : 'Non-JSON response body';
+                throw new Error(`HTTP ${response.status}: ${short}`);
+            }
         }
 
         // Si es 204 No Content, retornar null
@@ -113,13 +150,26 @@ async function apiRequest<T = any>(
             return null as T;
         }
 
-        return await response.json();
-    } catch (error: any) {
-        // Solo loguear errores que no sean de red (backend no disponible)
-        if (error.message !== 'Failed to fetch') {
-            console.error(`API Error [${method} ${endpoint}]:`, error);
+        // Parsear según Content-Type para evitar 'Unexpected token <' cuando el servidor devuelve HTML
+        if (isJson) {
+            return await response.json();
         }
-        throw error;
+
+        // Devolver texto para respuestas no JSON (por ejemplo páginas HTML de error)
+        const text = await response.text();
+        return text as unknown as T;
+    } catch (error: any) {
+        // En caso de fallo de fetch, loggear la URL y el método para diagnóstico
+        console.error(`Fetch error [${method} ${endpoint}]`, {
+            urls,
+            method,
+            endpoint,
+            error: error?.message || error,
+        });
+
+        // Re-emitir error con contexto
+        const message = error?.message || String(error);
+        throw new Error(`Fetch failed for ${urls[0]} (and fallback ${urls[1]}): ${message}`);
     }
 }
 

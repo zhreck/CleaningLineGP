@@ -8,11 +8,19 @@ export async function createWebpayTransaction(orderId: number): Promise<{
     url: string;
     token: string;
 }> {
-    const result = await api.post<{ data: { url: string; token: string } }>(
+    const result = await api.post<
+        | { success: true; data: { url: string; token: string } }
+        | { url: string; token: string }
+    >(
         '/payments/webpay/create',
         { orderId }
     );
-    return result.data;
+
+    if ('data' in result && result.data) {
+        return result.data;
+    }
+
+    return result;
 }
 
 /**
@@ -25,17 +33,32 @@ export async function commitWebpayPayment(token_ws: string): Promise<{
     authorizationCode?: string;
     paymentTypeCode?: string;
 }> {
-    const result = await api.post<{
-        data: {
+    const result = await api.post<
+        | {
+            success: true;
+            data: {
+                status: string;
+                orderId: number;
+                amount: number;
+                authorizationCode?: string;
+                paymentTypeCode?: string;
+            };
+        }
+        | {
             status: string;
             orderId: number;
             amount: number;
             authorizationCode?: string;
             paymentTypeCode?: string;
         }
-    }>(
+    >(
         '/payments/webpay/commit',
         { token_ws }
     );
-    return result.data;
+
+    if ('data' in result && result.data) {
+        return result.data;
+    }
+
+    return result;
 }
