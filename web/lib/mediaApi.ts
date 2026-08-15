@@ -3,9 +3,10 @@
  * Handles image upload, list, and delete operations with MinIO storage
  */
 
-import { getAccessToken } from './apiClient';
+import { getAccessToken, resolveApiBaseUrl } from './apiClient';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+// El backend expone todas sus rutas bajo /api (ver App/api/src/main.ts -> setGlobalPrefix)
+const API_BASE_URL = `${resolveApiBaseUrl()}/api`;
 
 /**
  * Response type for image upload

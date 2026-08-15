@@ -18,7 +18,8 @@ export function resolveApiBaseUrl(configuredUrl: string = process.env.NEXT_PUBLI
 }
 
 const API_BASE_URL = resolveApiBaseUrl();
-const API_BASE_URL_WITH_PREFIX = `${API_BASE_URL.replace(/\/$/, '')}/api`;
+// El backend expone todas sus rutas bajo /api (ver App/api/src/main.ts -> setGlobalPrefix)
+const API_URL = `${API_BASE_URL.replace(/\/$/, '')}/api`;
 
 // Variable en memoria para el access token
 let accessToken: string | null = null;
@@ -40,7 +41,7 @@ type RequestOptions = {
 
 async function refreshAccessToken(): Promise<string | null> {
     try {
-        const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        const response = await fetch(`${API_URL}/auth/refresh`, {
             method: 'POST',
             credentials: 'include', // Envía cookie HttpOnly con refresh token
             headers: {
@@ -71,10 +72,7 @@ async function apiRequest<T = any>(
 ): Promise<T> {
     const { method = 'GET', body, headers = {}, credentials = 'include' } = options;
 
-    const urls = [
-        `${API_BASE_URL}${endpoint}`,
-        `${API_BASE_URL_WITH_PREFIX}${endpoint}`,
-    ];
+    const url = `${API_URL}${endpoint}`;
 
     // Construir headers de manera type-safe
     const requestHeaders: Record<string, string> = {
@@ -104,11 +102,7 @@ async function apiRequest<T = any>(
     }
 
     try {
-        let response = await fetch(urls[0], config);
-
-        if (response.status === 404 && !endpoint.startsWith('/api')) {
-            response = await fetch(urls[1], config);
-        }
+        let response = await fetch(url, config);
 
         // Si recibimos 401, intentar renovar el token
         if (response.status === 401 && accessToken) {
@@ -118,7 +112,7 @@ async function apiRequest<T = any>(
                 // Reintentar la request original con el nuevo token
                 requestHeaders['Authorization'] = `Bearer ${newToken}`;
                 config.headers = requestHeaders;
-                response = await fetch(response.url.includes('/api/') ? urls[1] : urls[0], config);
+                response = await fetch(url, config);
             } else {
                 // Si no se pudo renovar, redirigir a login
                 if (typeof window !== 'undefined') {
@@ -161,7 +155,7 @@ async function apiRequest<T = any>(
     } catch (error: any) {
         // En caso de fallo de fetch, loggear la URL y el método para diagnóstico
         console.error(`Fetch error [${method} ${endpoint}]`, {
-            urls,
+            url,
             method,
             endpoint,
             error: error?.message || error,
@@ -169,7 +163,7 @@ async function apiRequest<T = any>(
 
         // Re-emitir error con contexto
         const message = error?.message || String(error);
-        throw new Error(`Fetch failed for ${urls[0]} (and fallback ${urls[1]}): ${message}`);
+        throw new Error(`Fetch failed for ${url}: ${message}`);
     }
 }
 

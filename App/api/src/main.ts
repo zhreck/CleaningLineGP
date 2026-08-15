@@ -10,6 +10,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
 
+  // Todas las rutas quedan bajo /api (coincide con el proxy de nginx en producción)
+  app.setGlobalPrefix('api');
+
   // Swagger API Documentation Setup
   const config = new DocumentBuilder()
     .setTitle('E-commerce API')
