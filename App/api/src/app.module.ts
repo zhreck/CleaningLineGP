@@ -19,7 +19,6 @@ import { SeedModule } from './seed/seed.module';
 import { CategoriesModule } from './categories/categories.module';
 import { MediaModule } from './media/media.module';
 import { WebpayModule } from './webpay/webpay.module';
-import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -56,7 +55,6 @@ import { PaymentsModule } from './payments/payments.module';
     CategoriesModule,
     MediaModule,
     WebpayModule,
-    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

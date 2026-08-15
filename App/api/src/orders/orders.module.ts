@@ -17,6 +17,6 @@ import { AuthModule } from '../auth/auth.module';
   ],
   controllers: [OrdersController],
   providers: [OrdersService],
-  exports: [OrdersService], // ✅ Exportar para que PaymentsModule pueda usarlo
+  exports: [OrdersService],
 })
 export class OrdersModule {}

@@ -4,11 +4,14 @@ export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import OffersCarousel from "../components/carousel/offersCarousel";
 import ProductGrid from "../components/products/productGrid";
-import { fetchProducts } from "../lib/api";
+import { getProducts } from "../lib/productsApi";
 import { getFinalPrice, formatCLP } from "../lib/price";
 
 export default async function HomePage() {
-  const products = await fetchProducts();
+  const products = await getProducts().catch((error) => {
+    console.error("Error fetching products:", error);
+    return [];
+  });
 
   // destacados para home
   const featured = products.filter((p) => p.isFeatured);

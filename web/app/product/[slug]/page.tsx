@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Product } from "../../../lib/types";
-import { fetchProducts } from "../../../lib/api";
+import { getProducts } from "../../../lib/productsApi";
 import Link from "next/link";
 import { useCart } from "../../../components/cart/cartContext";
 import { getFinalPrice, formatCLP, toNumber } from "../../../lib/price";
@@ -18,7 +18,7 @@ export default function ProductPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const products = await fetchProducts();
+        const products = await getProducts();
         const found = products.find((p) => p.slug === slug) ?? null;
         setProduct(found);
       } catch (err) {
