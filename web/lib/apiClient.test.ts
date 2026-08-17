@@ -12,24 +12,21 @@ describe('apiClient', () => {
     vi.unstubAllEnvs();
   });
 
-  it('normalizes localhost to 127.0.0.1 for browser requests', () => {
-    expect(resolveApiBaseUrl('http://localhost:3002', 'http://localhost:3000')).toBe('http://127.0.0.1:3002');
+  it('keeps localhost when the page itself is served from localhost, so the refresh-token cookie stays on the same host as the Next.js middleware', () => {
+    expect(resolveApiBaseUrl('http://localhost:3002', 'http://localhost:3000')).toBe('http://localhost:3002');
   });
 
-  it('retries against /api when the initial URL returns 404', async () => {
-    const fetchMock = vi.fn()
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify({ message: 'Not Found' }), {
-          status: 404,
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      )
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify({ success: true, data: { id: 42 } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      );
+  it('normalizes localhost to 127.0.0.1 when the page itself is served from 127.0.0.1', () => {
+    expect(resolveApiBaseUrl('http://localhost:3002', 'http://127.0.0.1:3000')).toBe('http://127.0.0.1:3002');
+  });
+
+  it('posts directly against the /api-prefixed URL', async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      new Response(JSON.stringify({ success: true, data: { id: 42 } }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
 
     vi.stubGlobal('fetch', fetchMock);
 
@@ -40,15 +37,10 @@ describe('apiClient', () => {
       customerPhone: '+56900000000',
     });
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      'http://127.0.0.1:3002/orders/checkout',
-      expect.any(Object),
-    );
-    expect(fetchMock).toHaveBeenNthCalledWith(
-      2,
-      'http://127.0.0.1:3002/api/orders/checkout',
+      'http://localhost:3002/api/orders/checkout',
       expect.any(Object),
     );
     expect(response).toEqual({ success: true, data: { id: 42 } });

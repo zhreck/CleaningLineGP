@@ -16,7 +16,7 @@ export async function createWebpayTransaction(orderId: number): Promise<{
         { orderId }
     );
 
-    if ('data' in result && result.data) {
+    if ('success' in result) {
         return result.data;
     }
 
@@ -56,7 +56,7 @@ export async function commitWebpayPayment(token_ws: string): Promise<{
         { token_ws }
     );
 
-    if ('data' in result && result.data) {
+    if ('success' in result) {
         return result.data;
     }
 

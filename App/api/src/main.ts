@@ -8,7 +8,7 @@ import { trace } from '@opentelemetry/api';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.use(cookieParser());
 
   // Todas las rutas quedan bajo /api (coincide con el proxy de nginx en producción)
   app.setGlobalPrefix('api');
@@ -49,9 +49,7 @@ async function bootstrap() {
     }),
   );
 
-  // Habilitar CORS para el frontend en Next (localhost:3000)
- // Habilitar CORS para el frontend en Next (localhost:3000)
- // Habilitar CORS dinámico (Para que funcione en Codespaces y en Local)
+  // Habilitar CORS dinámico para el frontend en Next (Para que funcione en Codespaces y en Local)
   app.enableCors({
     origin: true, // El valor "true" permite cualquier URL de origen de forma dinámica
     credentials: true,

@@ -9,7 +9,10 @@ export function resolveApiBaseUrl(configuredUrl: string = process.env.NEXT_PUBLI
 
     if (baseUrl.includes('localhost')) {
         const normalizedOrigin = currentOrigin.replace(/\/$/, '');
-        if (normalizedOrigin.includes('127.0.0.1') || normalizedOrigin.includes('localhost')) {
+        // El host de la API debe coincidir con el host de la página: si difieren
+        // (localhost vs 127.0.0.1), la cookie HttpOnly de refresh token queda en un
+        // dominio distinto al del middleware de Next.js y nunca se envía de vuelta.
+        if (normalizedOrigin.includes('127.0.0.1')) {
             return baseUrl.replace('localhost', '127.0.0.1');
         }
     }

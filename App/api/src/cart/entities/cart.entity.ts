@@ -18,7 +18,13 @@ export class Cart {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @OneToMany(() => CartItem, (item) => item.cart, { cascade: true })
+  // orphanedRowAction: 'delete' asegura que al quitar un item del array y
+  // guardar el carrito, TypeORM borre la fila en vez de solo poner cart_id
+  // en NULL (comportamiento por defecto), lo que dejaba filas huérfanas.
+  @OneToMany(() => CartItem, (item) => item.cart, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
   items: CartItem[];
 
   // Relación con el usuario

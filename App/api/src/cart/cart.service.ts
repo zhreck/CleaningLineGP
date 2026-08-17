@@ -10,8 +10,8 @@ import { CartItem } from './entities/cart-item.entity';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { ProductsService } from '../products/products.service';
 import { RedisService } from '../redis/redis.service';
+import { TAX_RATE } from '../common/constants/tax.constant';
 
-const TAX_RATE = 0.1; // 10% de impuestos
 const REDIS_CART_TTL = 86400; // 24 horas
 
 @Injectable()
@@ -27,7 +27,7 @@ export class CartService {
 
   // --- Métodos para usuarios autenticados (PostgreSQL) ---
 
-  async addToCartPersistent(userId: number, dto: AddToCartDto): Promise<Cart> {
+  async addToCartPersistent(userId: number, dto: AddToCartDto) {
     const { productId, quantity } = dto;
     const product = await this.productsService.findOne(productId);
 
@@ -63,7 +63,8 @@ export class CartService {
       cart.items.push(cartItem);
     }
 
-    return this.cartRepository.save(cart);
+    const savedCart = await this.cartRepository.save(cart);
+    return this.formatCartResponse(savedCart);
   }
 
   async getCartPersistent(userId: number) {
@@ -79,10 +80,7 @@ export class CartService {
     return this.formatCartResponse(cart);
   }
 
-  async removeFromCartPersistent(
-    userId: number,
-    productId: number,
-  ): Promise<Cart> {
+  async removeFromCartPersistent(userId: number, productId: number) {
     const cart = await this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: ['items', 'items.product'],
@@ -100,7 +98,8 @@ export class CartService {
     }
 
     cart.items.splice(itemIndex, 1);
-    return this.cartRepository.save(cart);
+    const savedCart = await this.cartRepository.save(cart);
+    return this.formatCartResponse(savedCart);
   }
 
   async clearCartPersistent(userId: number): Promise<void> {

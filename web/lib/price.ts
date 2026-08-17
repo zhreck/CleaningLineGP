@@ -7,8 +7,10 @@ export function toNumber(price: string | number): number {
     }
 
     if (typeof price === "string") {
-        // Limpiar string: remover $, puntos, comas y espacios
-        const cleaned = price.replace(/[$\.\s,]/g, "");
+        // El backend envía el precio como string decimal (ej. "2490.00"): el punto
+        // es el separador decimal y no debe eliminarse, o "2490.00" se leería
+        // como 249000 (100x el valor real). Solo limpiamos $, comas y espacios.
+        const cleaned = price.replace(/[$,\s]/g, "");
         const parsed = Number(cleaned);
         return isNaN(parsed) ? 0 : parsed;
     }

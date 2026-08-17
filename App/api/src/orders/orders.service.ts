@@ -12,6 +12,7 @@ import { CartService } from '../cart/cart.service';
 import { ProductsService } from '../products/products.service';
 import { User } from '../auth/entities/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { TAX_RATE } from '../common/constants/tax.constant';
 
 @Injectable()
 export class OrdersService {
@@ -95,6 +96,11 @@ export class OrdersService {
       newOrder.total += orderItem.quantity * orderItem.price;
       newOrder.items.push(orderItem);
     }
+
+    // Aplicar el mismo IVA que se muestra en el carrito/checkout, para que
+    // el monto de la orden (y lo cobrado en Webpay) coincida con lo que el
+    // cliente vio y aceptó pagar.
+    newOrder.total += newOrder.total * TAX_RATE;
 
     // Redondear el total a 2 decimales
     newOrder.total = parseFloat(newOrder.total.toFixed(2));

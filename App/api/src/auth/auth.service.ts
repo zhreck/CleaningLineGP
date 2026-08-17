@@ -92,10 +92,12 @@ export class AuthService {
   }
 
   async logout(request: Request, response: Response) {
-    const user = request.user as JwtPayload;
+    // JwtStrategy.validate() resuelve request.user como la entidad User
+    // completa (con "id"), no como el JwtPayload firmado (que usa "sub").
+    const user = request.user as User;
 
     // Limpiar refresh token de la base de datos
-    await this.userRepository.update(user.sub, {
+    await this.userRepository.update(user.id, {
       hashedRefreshToken: null,
     });
 
